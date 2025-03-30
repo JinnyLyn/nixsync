@@ -1,7 +1,3 @@
-let
-  system = "x86_64-linux";
-in
-
 {
   description = "Standalone home-manager config";
 
@@ -11,19 +7,15 @@ in
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
-    {
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
       homeConfigurations = {
         jin = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${system};
-          modules = [
-            ./home.nix
-            {
-              home.username = "jin";
-              home.homeDirectory = "/home/jin";
-              home.stateVersion = "24.11";
-            }
-          ];
+          inherit pkgs;
+          modules = [ ./home.nix ];
         };
       };
     };
