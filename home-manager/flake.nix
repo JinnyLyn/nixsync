@@ -1,3 +1,7 @@
+let
+  system = "x86_64-linux";
+in
+
 {
   description = "Standalone home-manager config";
 
@@ -11,8 +15,15 @@
     {
       homeConfigurations = {
         jin = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-          configuration = import ./home.nix;
+          pkgs = nixpkgs.legacyPackages.${system};
+          modules = [
+            ./home.nix
+            {
+              home.username = "jin";
+              home.homeDirectory = "/home/jin";
+              home.stateVersion = "24.11";
+            }
+          ];
         };
       };
     };
