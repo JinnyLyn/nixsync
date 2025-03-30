@@ -7,15 +7,11 @@
 let
   user="jin";
 in
-
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
-
-  
-  nixpkgs.config.allowUnfree = true;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -25,8 +21,6 @@ in
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
 
-  # Enabling flakes.
-  nix.settings.experimental-features = [ "nix-command" "flakes" ]; 
 
 
   # Configure network proxy if necessary
@@ -104,13 +98,14 @@ in
   # Install firefox.
   programs.firefox.enable = true;
 
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
 
   # Fonts
   fonts.packages = with pkgs; [
     nerdfonts
 
   ];
-
 
 
   # List packages installed in system profile. To search, run:
