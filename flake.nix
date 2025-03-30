@@ -3,9 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";  # Adjust as needed to match your system.stateVersion.
+    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
   };
 
-  outputs = { self, nixpkgs, ... }:
+  outputs = { self, nixpkgs, nixos-wsl, ... }:
     let
       # Use the full (legacy) package set to ensure attributes like pkgs.fish exist.
       pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; };
@@ -32,7 +33,13 @@
         # Desktop (or WSL) configuration: no hardware module is included.
         desktop = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          modules = [ finalConfig ];
+          modules = [
+	    nixos-wsl.nixosModules.default
+	    {
+	      system.stateVersion = "24.05";
+  	      wsl.enable = true;
+	    }
+	  ];
         };
       };
     };
