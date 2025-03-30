@@ -8,8 +8,6 @@ let
   user="jin";
 in
 
-{nixpkgs.config.allowUnfree = true;}
-
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -111,6 +109,10 @@ in
   ];
 
 
+  allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "ida-free"
+  ];
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -120,7 +122,6 @@ in
     gitFull
     proxychains
     tor
-    ida-free
     python3Full
     bat
     python312Packages.pip
