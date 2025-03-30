@@ -117,7 +117,6 @@ in
     wget
     curl
     gitFull
-    notion-app-enhanced
     proxychains
     tor
     ida-free
