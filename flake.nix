@@ -2,27 +2,34 @@
   description = "Shared NixOS configuration (excluding hardware settings) for laptop and desktop/WSL";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";  # Adjust as needed to match your system.stateVersion.
   };
 
   outputs = { self, nixpkgs, ... }:
     let
-      # Use the legacyPackages for a complete package set.
+      # Use the full (legacy) package set to ensure attributes like pkgs.fish exist.
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      # Import your configuration.nix with the proper pkgs and lib.
+      # Import your configuration.nix using the proper pkgs and lib.
       baseConfig = import ./configuration.nix {
         config = { };
         pkgs = pkgs;
         lib = nixpkgs.lib;
       };
-      # Override the imports so hardware-specific configurations are not applied.
-      finalConfig = baseConfig // { imports = []; };
+      # Remove hardware-configuration.nix from the imports.
+      finalConfig = baseConfig // {
+        imports = builtins.filter (i: i != ./hardware-configuration.nix) baseConfig.imports;
+      };
     in {
       nixosConfigurations = {
+        # Laptop configuration: it imports a local hardware file that you set up only on your laptop.
         laptop = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          modules = [ finalConfig ];
+          modules = [
+            finalConfig
+            (import ./hardware-configuration.laptop.nix)
+          ];
         };
+        # Desktop (or WSL) configuration: no hardware module is included.
         desktop = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [ finalConfig ];
