@@ -1,17 +1,21 @@
 {
-  description = "shared nixos config (excluding hardware settings) for desktop and laptop";
+  description = "Shared NixOS configuration (excluding hardware settings) for laptop and desktop/WSL";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
   };
 
-  outputs = { self, nixpkgs, ... }: 
+  outputs = { self, nixpkgs, ... }:
     let
+      # Use the legacyPackages for a complete package set.
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      # Import your configuration.nix with the proper pkgs and lib.
       baseConfig = import ./configuration.nix {
         config = { };
-        pkgs = nixpkgs;
+        pkgs = pkgs;
         lib = nixpkgs.lib;
       };
+      # Override the imports so hardware-specific configurations are not applied.
       finalConfig = baseConfig // { imports = []; };
     in {
       nixosConfigurations = {
@@ -25,4 +29,5 @@
         };
       };
     };
-}    
+}
+
