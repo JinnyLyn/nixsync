@@ -14,6 +14,9 @@ in
       ./hardware-configuration.nix
     ];
 
+  
+  nixpkgs.config.allowUnfree = true;
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -109,9 +112,6 @@ in
   ];
 
 
-  allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-    "ida-free"
-  ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -122,6 +122,7 @@ in
     gitFull
     proxychains
     tor
+    ida-free
     python3Full
     bat
     python312Packages.pip

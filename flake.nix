@@ -8,7 +8,7 @@
   outputs = { self, nixpkgs, ... }:
     let
       # Use the full (legacy) package set to ensure attributes like pkgs.fish exist.
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; };
       # Import your configuration.nix using the proper pkgs and lib.
       baseConfig = import ./configuration.nix {
         config = { };
