@@ -7,6 +7,9 @@
 let
   user="jin";
 in
+
+{nixpkgs.config.allowUnfree = true;}
+
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -100,8 +103,6 @@ in
   # Install firefox.
   programs.firefox.enable = true;
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
 
   # Fonts
   fonts.packages = with pkgs; [
